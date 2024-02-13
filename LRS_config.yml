@@ -1,0 +1,45 @@
+project_dir: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/
+sample_table: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/sample_table.txt
+scratch_dir: /tmp/tannerj
+output_dir: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/output
+
+reference_params:
+    GRCh38:
+        ref_name: GRCh38
+        fasta: /oak/stanford/groups/euan/annotations/homo_sapiens/GRCH38/GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta
+    GRCh37:
+        ref_name: GRCh37
+        fasta: /oak/stanford/groups/euan/annotations/homo_sapiens/GRCH37/reference/GRCh37.fa
+
+PAR_bed:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/annotation/GRCh38_PAR.bed
+  GRCh37: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/annotation/GRCh37_PAR.bed
+
+TRF_annotation:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/annotation/human_GRCh38_no_alt_analysis_set.trf.bed
+  GRCh37: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/annotation/human_hs37d5.trf.bed
+
+SV_truth_set:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_difficult_medical_gene_SV_benchmark_v0.01.vcf.gz
+  GRCh37: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/GRCh37.GIAB_INDEL_SV_benchmark.HG002_SVs_Tier1_v0.6.vcf.gz
+
+SV_truth_bed:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_difficult_medical_gene_SV_benchmark_v0.01.bed
+  GRCh37: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/GRCh37.GIAB_INDEL_SV_benchmark.HG002_SVs_Tier1_v0.6.bed
+
+phasing_truth_set:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_1_22_v4.2.1_benchmark_phased_MHCassembly_StrandSeqANDTrio.vcf.gz
+
+smallvar_truth_set:
+  GRCh38: 
+    CMRG: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_difficult_medical_gene_smallvar_benchmark_v0.02.03.vcf.gz
+    NISTv4.2: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz
+
+smallvar_truth_bed:
+  GRCh38: 
+    CMGR: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_difficult_medical_gene_smallvar_benchmark_v0.02.03.bed
+    NISTv4.2: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
+
+
+vntr_motifs: /oak/stanford/groups/euan/projects/tannerj/UDN/scripts/vamos/example/region_motif.bed
+vamos_path: /oak/stanford/groups/euan/projects/tannerj/UDN/scripts/vamos/src/vamos

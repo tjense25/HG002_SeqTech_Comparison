@@ -1,0 +1,12 @@
+name: phasing
+channels:
+    - bioconda
+    - conda-forge
+dependencies:
+    - tabix
+    - whatshap=2.0
+    - dataclasses
+    - samtools
+    - biopython>=1.73
+    - bcftools
+    - samtools

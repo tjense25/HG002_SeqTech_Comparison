@@ -1,0 +1,10 @@
+name: jasmine
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - python=3.9
+    - minimap2=2.24
+    - samtools
+    - racon
+    - jasminesv

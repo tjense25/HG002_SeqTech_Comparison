@@ -1,0 +1,4 @@
+SAMPLE	MAP_TECH	MODEL	FASTQ_PATH
+ICLR	map-iclr	WGS	/oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/ICLR/CLR10_HG002/CLR10_HG002-iCLR_Pipeline_1_0_0-5b008e-baaa21aa-0806-4f51-849a-1b7a2b650afa/iclr/CLR10.HG002.rendered.minihyb.fq.gz
+ONT_duplex	map-ont	ONT_R104	/oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/ONT_Duplex/R10_duplex/11_15_22_R1041_Duplex_HG002_Dorado_v0.1.1_400bps_sup_stereo_duplex_pass.fastq
+PacBio_Revio	map-hifi	PACBIO	/oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/PacBio_Revio/Revio_20kb/m84011_220902_175841_s1.hifi_reads.fastq

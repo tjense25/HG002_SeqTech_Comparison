@@ -1,0 +1,12 @@
+name: LR_workflow
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - minimap2=2.26
+    - samtools
+    - sniffles=2.2
+    - svim
+    - cutesv
+    - nanoplot
+    - survivor
