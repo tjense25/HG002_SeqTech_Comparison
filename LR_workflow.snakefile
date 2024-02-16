@@ -16,36 +16,36 @@ localrules: all
                
 rule all:      
     input:     
-        expand("{outdir}/truvari/{sample}.{ref_name}.consensus_SVs_vs_GIAB/formatted_summary.txt",
-                outdir=outdir,
-                sample=samples,
-               ref_name=["GRCh38", "GRCh37"]),
+        #expand("{outdir}/truvari/{sample}.{ref_name}.consensus_SVs_vs_GIAB/formatted_summary.txt",
+        #        outdir=outdir,
+        #        sample=samples,
+        #       ref_name=["GRCh38", "GRCh37"]),
         expand("{outdir}/truvari/{sample}.{ref_name}.{tool}_vs_GIAB/formatted_summary.txt",
                outdir=outdir,
                sample=samples,
                ref_name=["GRCh37", "GRCh38"],
-               tool=["sniffles", "cuteSV", "SVIM", "pbsv"]),
-        expand("{outdir}/deep_variant/{sample}.{ref_name}.deep_variant.small_vars.vcf.gz",
-               outdir=outdir,
-               sample=samples,
-               ref_name=["GRCh38", "GRCh37"]),
-        expand("{outdir}/whatshap/{sample}.{ref_name}.whatshap.phasing_stats.txt",
-                outdir=outdir,
-                sample=samples,
-                ref_name="GRCh38"),
-        expand("{outdir}/alignment/{sample}.{ref_name}.sorted.whatshap_PHASED.bam",
-                outdir=outdir,
-                sample=samples,
-                ref_name="GRCh38"),
-        expand("{outdir}/whatshap/{sample}.{ref_name}.whatshap.compare_switch_errors.tsv",
-               outdir=outdir,
-               sample=samples,
-               ref_name="GRCh38")
+               tool=["sniffles"]), #, "cuteSV", "SVIM", "pbsv"]),
+        #expand("{outdir}/deep_variant/{sample}.{ref_name}.deep_variant.small_vars.vcf.gz",
+        #       outdir=outdir,
+        #       sample=samples,
+        #       ref_name=["GRCh38", "GRCh37"]),
+        #expand("{outdir}/whatshap/{sample}.{ref_name}.whatshap.phasing_stats.txt",
+        #        outdir=outdir,
+        #        sample=samples,
+        #        ref_name="GRCh38"),
+        #expand("{outdir}/alignment/{sample}.{ref_name}.sorted.whatshap_PHASED.bam",
+        #        outdir=outdir,
+        #        sample=samples,
+        #        ref_name="GRCh38"),
+        #expand("{outdir}/whatshap/{sample}.{ref_name}.whatshap.compare_switch_errors.tsv",
+        #       outdir=outdir,
+        #       sample=samples,
+        #       ref_name="GRCh38")
         expand("{outdir}/happy/{sample}.{ref_name}.deepvariant_vs_{truthset}/test.summary.csv",
                outdir=outdir,
                sample=samples,
                ref_name="GRCh38",
-               truthset=["NISTv4.2", "CMGR"]),
+               truthset=["NISTv4.2", "CMRG"]),
 
 rule align_minimap2:
     threads: 16
@@ -376,8 +376,7 @@ rule truvari_single_tool:
     mem=32,
     time=4
   input:
-    vcf=join(outdir, "SV_calls/{sample}/{ref_name}/{tool}/{sample}.{ref_name}.SVs.{tool}.vcf.gz"),
-    tbi=join(outdir, "SV_calls/{sample}/{ref_name}/{tool}/{sample}.{ref_name}.SVs.{tool}.vcf.gz.tbi")
+    vcf = lambda w: config["SV_vcf"][w.ref_name][w.tool][w.sample]
   params:
     truthset=lambda w: config["SV_truth_set"][w.ref_name],
     truthbed = lambda w: config["SV_truth_bed"][w.ref_name]
@@ -547,12 +546,11 @@ rule happy:
     mem=24,
     time=12
   input:
-    vcf = rules.deepvariant.output[0],
-    vcf = labmda w: config["smallvar_vcf"][w.ref_name][w.sample]
+    vcf = lambda w: config["smallvar_vcf"][w.ref_name][w.sample],
     ref = lambda w: config["reference_params"][w.ref_name]["fasta"]
   params:
     truthset= lambda w: config["smallvar_truth_set"][w.ref_name][w.truthset],
-    truthbed = lambda w: config["smallvar_truth_bed"][w.ref_name][w.truthset]
+    truthbed = lambda w: config["smallvar_truth_bed"][w.ref_name][w.truthset],
     extra_opt = lambda w: "-l chr20" if w.truthset == "NISTv4.2" else ""
   output:
     join(outdir, "happy/{sample}.{ref_name}.deepvariant_vs_{truthset}/test.summary.csv")
