@@ -41,9 +41,6 @@ smallvar_truth_bed:
     NISTv4.2: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/HG002_GRCh38_1_22_v4.2.1_benchmark_noinconsistent.bed
 
 
-vntr_motifs: /oak/stanford/groups/euan/projects/tannerj/UDN/scripts/vamos/example/region_motif.bed
-vamos_path: /oak/stanford/groups/euan/projects/tannerj/UDN/scripts/vamos/src/vamos
-
 smallvar_vcf:
   GRCh38:
     ICLR: /oak/stanford/groups/euan/projects/john_primate/ICLR_HG002/grch38_vcf/Unmarked_Sample_611773165.Marked_Sample_640456819.combined_iclr_sbs.phased.vcf.gz
@@ -62,4 +59,17 @@ SV_vcf:
       ONT_duplex: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/output/SV_calls/ONT_duplex/GRCh37/sniffles/ONT_duplex.GRCh37.SVs.sniffles.vcf.gz
       PacBio_Revio: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/output/SV_calls/PacBio_Revio/GRCh37/sniffles/PacBio_Revio.GRCh37.SVs.sniffles.vcf.gz
 
+phased_alignments:
+  GRCh38:
+    ICLR: /oak/stanford/groups/euan/projects/john_primate/ICLR_HG002/grch38_vcf/Unmarked_Sample_611773165.bam
+    ONT_duplex: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/output/alignment/ONT_duplex.GRCh38.sorted.whatshap_PHASED.bam
+    PacBio_Revio: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/output/alignment/PacBio_Revio.GRCh38.sorted.whatshap_PHASED.bam
 
+
+TR_repeat_catalog:
+  GRCh38: /oak/stanford/groups/euan/projects/tannerj/UDN/references/adotto_repeats.hg38.bed.gz
+
+vamos_repeat_catalog:
+  GRCh38: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/truth_sets/Adotto_TR_reference.vamos.bed
+
+trgt_bin: /oak/stanford/groups/smontgom/tannerj/SeqTech_SVcalling_Benchmark/HG002_GIAB/scripts/trgt-v0.8.0-linux_x86_64

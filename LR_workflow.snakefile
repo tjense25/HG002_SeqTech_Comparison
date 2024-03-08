@@ -16,15 +16,18 @@ localrules: all
                
 rule all:      
     input:     
+       join(outdir,"TRGT/PacBio_Revio.GRCh38.TRGT.vcf.gz"),
+       expand(join(outdir, "vamos/{sample}.GRCh38.vntr.vamos.tsv"),
+            sample=samples)
         #expand("{outdir}/truvari/{sample}.{ref_name}.consensus_SVs_vs_GIAB/formatted_summary.txt",
         #        outdir=outdir,
         #        sample=samples,
         #       ref_name=["GRCh38", "GRCh37"]),
-        expand("{outdir}/truvari/{sample}.{ref_name}.{tool}_vs_GIAB/formatted_summary.txt",
-               outdir=outdir,
-               sample=samples,
-               ref_name=["GRCh37", "GRCh38"],
-               tool=["sniffles"]), #, "cuteSV", "SVIM", "pbsv"]),
+        #expand("{outdir}/truvari/{sample}.{ref_name}.{tool}_vs_GIAB/formatted_summary.txt",
+        #       outdir=outdir,
+        #       sample=samples,
+        #       ref_name=["GRCh37", "GRCh38"],
+        #       tool=["sniffles"]), #, "cuteSV", "SVIM", "pbsv"]),
         #expand("{outdir}/deep_variant/{sample}.{ref_name}.deep_variant.small_vars.vcf.gz",
         #       outdir=outdir,
         #       sample=samples,
@@ -41,11 +44,11 @@ rule all:
         #       outdir=outdir,
         #       sample=samples,
         #       ref_name="GRCh38")
-        expand("{outdir}/happy/{sample}.{ref_name}.deepvariant_vs_{truthset}/test.summary.csv",
-               outdir=outdir,
-               sample=samples,
-               ref_name="GRCh38",
-               truthset=["NISTv4.2", "CMRG"]),
+        #expand("{outdir}/happy/{sample}.{ref_name}.deepvariant_vs_{truthset}/test.summary.csv",
+        #       outdir=outdir,
+        #       sample=samples,
+        #       ref_name="GRCh38",
+        #       truthset=["NISTv4.2", "CMRG"]),
 
 rule align_minimap2:
     threads: 16
@@ -477,33 +480,6 @@ rule spectre:
             --reference {input.ref} 
     """
 
-rule vamos:
-    resources:
-        mem=72,
-        time=8
-    threads: 1
-    input:
-        bam = rules.align_minimap2.output[0],
-        bai = rules.align_minimap2.output[0] + '.bai'
-    params:
-        vntr_motifs = config["vntr_motifs"],
-        vamos=config["vamos_path"],
-        project_dir = config["project_dir"],
-        sample = '{sample}'
-    output:
-        vcf = join(outdir, "{sample}/SV_calls/vamos/{sample}.{ref_name}.vntr.vamos.vcf"),
-        tsv = join(outdir, "{sample}/SV_calls/vamos/{sample}.{ref_name}.vntr.vamos.tsv")
-    conda: 'envs/vamos.yaml'
-    shell: """
-        {params.vamos} --read \
-            -t {threads} \
-            -b {input.bam} \
-            -r {params.vntr_motifs} \
-            -s {params.sample} \
-            -o {output.vcf}
-        cat {output.vcf} | python3 {params.project_dir}/scripts/vntr_vcf_convert_tsv.py > {output.tsv}
-    """
-
 rule deepvariant:
     threads: 32
     resources:
@@ -642,13 +618,65 @@ rule haplotag_bam:
         phased_vcf = rules.whatshap_phase.output[0],
         ref = lambda w: config["reference_params"][w.ref_name]["fasta"]
     output:
-        phased_bam = join(outdir, "alignment/{sample}.{ref_name}.sorted.whatshap_PHASED.bam"),
-        bai = join(outdir, "alignment/{sample}.{ref_name}.sorted.whatshap_PHASED.bam.bai")
+        phased_bam = join(outdir, "alignment/{sample}.{ref_name}.sorted.whatshap_PHASED.bam")
     conda: 'envs/phasing.yaml'
     shell: """
         whatshap haplotag --reference {input.ref} \
             --ignore-read-groups \
             -o {output.phased_bam}  \
             {input.phased_vcf} {input.bam}
-        samtools index {output.phased_bam}
     """
+
+rule trgt:
+  threads: 32
+  resources: 
+    mem=52,
+    time=8
+  input:
+    bam = lambda w: config["phased_alignments"][w.ref_name][w.sample],
+    ref = lambda w: config["reference_params"][w.ref_name]["fasta"]
+  params:
+    prefix = lambda w: join(outdir, "TRGT", w.sample + "." + w.ref_name + ".TRGT"),
+    trgt_bin = config["trgt_bin"],
+    repeat_catalog = lambda w: config["TR_repeat_catalog"][w.ref_name]
+  output:
+    vcf = temp(join(outdir,"TRGT/{sample}.{ref_name}.TRGT.vcf"))
+  shell:  """
+      {params.trgt_bin} --genome {input.ref} \
+           --threads {threads} \
+           --repeats {params.repeat_catalog} \
+           --reads {input.bam} \
+           --karyotype XY \
+           --genotyper cluster \
+           --sample-name {wildcards.sample} \
+           --output-prefix {params.prefix} 
+
+      gunzip {params.prefix}.vcf.gz
+  """
+
+rule vamos:
+    resources:
+        mem=72,
+        time=8
+    threads: 16
+    input:
+        bam = rules.haplotag_bam.output[0],
+        bai = rules.haplotag_bam.output[0] + '.bai'
+    params:
+        vntr_motifs = lambda w: config["vamos_repeat_catalog"][w.ref_name],
+        project_dir = config["project_dir"],
+        sample = '{sample}'
+    output:
+        vcf = join(outdir, "vamos/{sample}.{ref_name}.vntr.vamos.vcf"),
+        tsv = join(outdir, "vamos/{sample}.{ref_name}.vntr.vamos.tsv")
+    conda: 'vamos'
+    shell: """
+        vamos --read \
+            -t {threads} \
+            -b {input.bam} \
+            -r {params.vntr_motifs} \
+            -s {params.sample} \
+            -o {output.vcf}
+        cat {output.vcf} | python3 {params.project_dir}/scripts/vntr_vcf_convert_tsv.py > {output.tsv}
+    """
+
